@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Room</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
+  </head>
+  <body>
+    <h1>Chat Room</h1>
+    <div>
+      <label for="name">Enter your name:</label>
+      <input type="text" id="name" />
+      <button onclick="login()">Login</button>
+    </div>
+    <div id="chat-container" style="display:none">
+      <div id="room-selection">
+        <label for="room">Select a room:</label>
+        <select id="room"></select>
+        <button onclick="createRoom()">Create Room</button>
+        <button onclick="joinRoom()">Join Room</button>
+      </div>
+      <div id="message-container"></div>
+      <div>
+        <input type="text" id="message" placeholder="Enter message" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    <script>
+      // Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyANjaVjbPk_JsJp60PZYGHxy-sqHuZdkzw",
+        authDomain: "chatme-2ebf4.firebaseapp.com",
+        projectId: "chatme-2ebf4",
+        storageBucket: "chatme-2ebf4.appspot.com",
+        messagingSenderId: "1060710336790",
+        appId: "1:1060710336790:web:bfb3eb65397beee1516837"
+      };
+      firebase.initializeApp(firebaseConfig);
+
+      const db = firebase.database();
+      let username = "";
+      let currentRoom = "";
+      const chatContainer = document.getElementById("chat-container");
+      const messageContainer = document.getElementById("message-container");
+      const roomSelection = document.getElementById("room-selection");
+      const roomSelect = document.getElementById("room");
+      const messageInput = document.getElementById("message");
+
+      // Login function
+      function login() {
+        const nameInput = document.getElementById("name");
+        username = nameInput.value;
+        if (username !== "") {
+          chatContainer.style.display = "block";
+          roomSelection.style.display = "block";
+          const roomsRef = db.ref("rooms");
+          roomsRef.on("value", (snapshot) => {
+            roomSelect.innerHTML = "";
+            snapshot.forEach((child) => {
+              const option = document.createElement("option");
+              option.value = child.key;
+              option.innerText = child.key;
+              roomSelect.appendChild(option);
+            });
+          });
+        }
+      }
+
+      // Create a new room
+      function createRoom() {
+        const roomName = prompt("Enter room name:");
+        if (roomName !== null && roomName !== "") {
+          const newRoomRef = db.ref(`rooms/${roomName}`);
+          newRoomRef.set({
+            name: roomName,
+            creator: username,
+            messages: [],
+          });
+          currentRoom = roomName;
+          listenForMessages();
+        }
+      }
+
+      // Join a room
+      function joinRoom() {
+        const selectedRoom = roomSelect.value;
+        if (selectedRoom !== "") {
+          currentRoom = selectedRoom;
+          listenForMessages();
+        }
+      }
+
+      // Listen for new messages in the current room
+      function listenForMessages() {
+        const messagesRef = db.ref(`rooms/${currentRoom}/messages`);
+        messagesRef.on("value", (snapshot) => {
+          messageContainer.innerHTML = "";
+          snapshot.forEach((child) => {
+            const message = child.val();
+            const messageElement = document.createElement("div");
+            messageElement.innerText = `${message.sender}: ${message.text}`;
+            messageContainer.appendChild(messageElement);
+          });
+        });
+      }
+
+      // Send a message
+      function sendMessage() {
+        const messageText = messageInput.value;
+        if (messageText !== "") {
+          const messagesRef = db.ref(`rooms/${currentRoom}/messages`);
+          messagesRef.push({
+            sender: username,
+            text: messageText,
+          });
+          messageInput.value = "";
+        }
+      }
+    </script>
+  </body>
+</html>
