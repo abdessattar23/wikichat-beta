@@ -40,7 +40,12 @@ function displayRooms() {
       var roomName = childSnapshot.child("name").val();
       var roomDiv = document.createElement("div");
       roomDiv.innerHTML =
+        
         "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
+        roomName +
+        "\")'>" +
+        roomName +
+        "</a>";
       roomsDiv.appendChild(roomDiv);
     });
   });
