@@ -1,12 +1,13 @@
 // Initialize Firebase
 var config = {
-  apiKey: "AIzaSyDPDvJ9M59cj-I220lYQzXNnmzLTci99NI",
-    authDomain: "wikichat-beta-1.firebaseapp.com",
-    projectId: "wikichat-beta-1",
-    storageBucket: "wikichat-beta-1.appspot.com",
-    messagingSenderId: "796939261400",
-    appId: "1:796939261400:web:52637d197f3380f51d8ead"
+  apiKey: "AIzaSyDoJ6vE_0O1OSiEZGsYu1B86YvmByZFAyw",
+    authDomain: "wikichat-beta2.firebaseapp.com",
+    projectId: "wikichat-beta2",
+    storageBucket: "wikichat-beta2.appspot.com",
+    messagingSenderId: "717471861279",
+    appId: "1:717471861279:web:cb26f45158847e3dd3e32a"
 };
+
 firebase.initializeApp(config);
 
 // Get a reference to the database service
