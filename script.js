@@ -1,5 +1,5 @@
-// Your web app's Firebase configuration
-const firebaseConfig = {
+// Initialize Firebase
+var config = {
   apiKey: "AIzaSyANjaVjbPk_JsJp60PZYGHxy-sqHuZdkzw",
         authDomain: "chatme-2ebf4.firebaseapp.com",
         projectId: "chatme-2ebf4",
@@ -7,69 +7,80 @@ const firebaseConfig = {
         messagingSenderId: "1060710336790",
         appId: "1:1060710336790:web:bfb3eb65397beee1516837"
 };
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(config);
 
 // Get a reference to the database service
-const database = firebase.database();
+var database = firebase.database();
 
-let chatroom = "general";
-let username;
+// Get the input field and set the focus on it
+var input = document.getElementById("message");
+input.focus();
 
-// Get elements
-const roomSelect = document.getElementById("roomSelect");
-const messageList = document.getElementById("messageList");
-const messageInput = document.getElementById("messageInput");
-const loginButton = document.getElementById("loginButton");
-
-// Listen for changes in the selected chatroom
-roomSelect.addEventListener("change", (event) => {
-  chatroom = event.target.value;
-  loadMessages(chatroom);
-});
-
-// Listen for changes in the message input field
-messageInput.addEventListener("keyup", (event) => {
-  if (event.key === "Enter") {
-    sendMessage();
+// Create a new chat room
+function createRoom() {
+  var roomName = prompt("Enter the name of the new room:");
+  if (roomName != null && roomName.trim() != "") {
+    var newRoomRef = database.ref().child("rooms").push();
+    newRoomRef.set({
+      name: roomName.trim()
+    });
   }
-});
+}
 
-// Listen for changes in the login button
-loginButton.addEventListener("click", () => {
-  username = document.getElementById("usernameInput").value.trim();
-  if (username) {
-    document.getElementById("loginContainer").style.display = "none";
-    document.getElementById("chatContainer").style.display = "block";
-    loadMessages(chatroom);
-  }
-});
-
-// Load messages from the specified chatroom
-function loadMessages(chatroom) {
-  // Clear the message list
-  messageList.innerHTML = "";
-  // Load the messages from the database
-  database.ref(chatroom).once("value", (snapshot) => {
-    snapshot.forEach((childSnapshot) => {
-      const message = childSnapshot.val().message;
-      const sender = childSnapshot.val().sender;
-      const messageElement = document.createElement("li");
-      messageElement.innerText = `${sender}: ${message}`;
-      messageList.appendChild(messageElement);
+// Display the chat messages
+function displayMessages(roomKey) {
+  var messagesRef = database.ref().child("messages/" + roomKey);
+  messagesRef.on("value", function(snapshot) {
+    var messagesDiv = document.getElementById("messages");
+    messagesDiv.innerHTML = "";
+    snapshot.forEach(function(childSnapshot) {
+      var message = childSnapshot.val();
+      var messageDiv = document.createElement("div");
+      messageDiv.innerHTML = message.name + ": " + message.text;
+      messagesDiv.appendChild(messageDiv);
     });
   });
 }
 
-// Send a message to the current chatroom
-function sendMessage() {
-  const message = messageInput.value.trim();
-  if (message) {
-    database.ref(chatroom).push({
-      message: message,
-      sender: username,
+// Send a chat message
+function sendMessage(roomKey) {
+  var messageField = document.getElementById("message");
+  var messageText = messageField.value;
+  var username = localStorage.getItem("username");
+
+  if (messageText.trim() != "") {
+    var messagesRef = database.ref().child("messages/" + roomKey);
+    messagesRef.push().set({
+      name: username,
+      text: messageText
     });
-    messageInput.value = "";
+    messageField.value = "";
+  }
+}
+
+// Login to the chat app
+function login() {
+  var username = document.getElementById("username").value.trim();
+  if (username != "") {
+    localStorage.setItem("username", username);
+    document.getElementById("login-page").style.display = "none";
+    document.getElementById("chat-page").style.display = "block";
+    var roomsRef = database.ref().child("rooms");
+    roomsRef.on("value", function(snapshot) {
+      var roomsDiv = document.getElementById("rooms");
+      roomsDiv.innerHTML = "";
+      snapshot.forEach(function(childSnapshot) {
+        var roomKey = childSnapshot.key;
+        var roomName = childSnapshot.child("name").val();
+        var roomDiv = document.createElement("div");
+        roomDiv.innerHTML =
+          "<a href='#' onclick='displayMessages(\"" +
+          roomKey +
+          "\")'>" +
+          roomName +
+          "</a>";
+        roomsDiv.appendChild(roomDiv);
+      });
+    });
   }
 }
