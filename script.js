@@ -23,7 +23,7 @@ function createRoom() {
   if (roomName != null && roomName.trim() != "") {
     var newRoomRef = database.ref().child("rooms/"+roomName);
     database.ref().child("rooms").set({
-      name: roomName
+      roomName
     });
     
   }
@@ -37,7 +37,7 @@ function displayRooms() {
     roomsDiv.innerHTML = "";
     snapshot.forEach(function(childSnapshot) {
       //var roomKey = childSnapshot.key;
-      var roomName = childSnapshot.child("name").val();
+      var roomName = childSnapshot.val();
       var roomDiv = document.createElement("div");
       roomDiv.innerHTML =
         
