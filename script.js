@@ -23,8 +23,7 @@ function createRoom() {
   if (roomName != null && roomName.trim() != "") {
     var newRoomRef = database.ref().child("rooms/"+roomName);
     database.ref().child("rooms").push().set({
-      roomName,
-      index : index
+      roomName
     });
     
   }
@@ -37,7 +36,6 @@ function displayRooms() {
     var roomsDiv = document.getElementById("rooms");
     roomsDiv.innerHTML = "";
     snapshot.forEach(function(childSnapshot) {
-      index = index + 1;
       //var roomKey = childSnapshot.key;
       var roomName = childSnapshot.val();
       var roomDiv = document.createElement("div");
@@ -92,6 +90,5 @@ function login() {
     document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
     displayRooms();
-    var index = 0;
   }
 }
