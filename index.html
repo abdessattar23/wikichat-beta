@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="style.css">
     <title>Chat App</title>
   </head>
   <body>
@@ -16,6 +15,11 @@
         <button onclick="login()">Login</button>
       </div>
       <div id="chat-page" style="display: none">
+        <div>
+          <label for="room-name">Enter a room name:</label>
+          <input type="text" id="room-name" />
+          <button onclick="createRoom()">Create Room</button>
+        </div>
         <div id="rooms"></div>
         <div id="messages"></div>
         <input type="text" id="message" />
@@ -27,4 +31,3 @@
     <script src="script.js"></script>
   </body>
 </html>
-
