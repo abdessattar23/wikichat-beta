@@ -1,11 +1,11 @@
 // Initialize Firebase
 var config = {
-  apiKey: "AIzaSyANjaVjbPk_JsJp60PZYGHxy-sqHuZdkzw",
-        authDomain: "chatme-2ebf4.firebaseapp.com",
-        projectId: "chatme-2ebf4",
-        storageBucket: "chatme-2ebf4.appspot.com",
-        messagingSenderId: "1060710336790",
-        appId: "1:1060710336790:web:bfb3eb65397beee1516837"
+  apiKey: "AIzaSyDPDvJ9M59cj-I220lYQzXNnmzLTci99NI",
+    authDomain: "wikichat-beta-1.firebaseapp.com",
+    projectId: "wikichat-beta-1",
+    storageBucket: "wikichat-beta-1.appspot.com",
+    messagingSenderId: "796939261400",
+    appId: "1:796939261400:web:52637d197f3380f51d8ead"
 };
 firebase.initializeApp(config);
 
@@ -20,7 +20,7 @@ input.focus();
 function createRoom() {
   var roomName = prompt("Enter the name of the new room:");
   if (roomName != null && roomName.trim() != "") {
-    var newRoomRef = database.ref().child("rooms").push();
+    var newRoomRef = database.ref().child("messages").push();
     newRoomRef.set({
       name: roomName.trim()
     });
