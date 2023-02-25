@@ -1,0 +1,92 @@
+/* Style for the header section */
+header {
+  background-color: #171717;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Style for the chat room section */
+.chat-room {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.chat-room .message {
+  background-color: #f1f0f0;
+  border-radius: 10px;
+  margin: 5px 0;
+  padding: 10px;
+  width: fit-content;
+  max-width: 80%;
+}
+
+.chat-room .message .user {
+  color: #171717;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Style for the input section */
+.input-section {
+  background-color: #ebebeb;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.input-section input[type="text"] {
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  padding: 10px 20px;
+  width: 80%;
+}
+
+.input-section button[type="submit"] {
+  background-color: #171717;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  width: 20%;
+}
+
+/* Style for the login section */
+.login-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100vh - 80px);
+}
+
+.login-section h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.login-section input[type="text"] {
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+}
+
+.login-section button[type="submit"] {
+  background-color: #171717;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+}
