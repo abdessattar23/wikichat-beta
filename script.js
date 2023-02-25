@@ -21,10 +21,11 @@ input.focus();
 function createRoom() {
   var roomName = prompt("Enter the name of the new room:");
   if (roomName != null && roomName.trim() != "") {
-    var newRoomRef = database.ref().child("messages").push();
-    newRoomRef.set({
-      name: roomName.trim()
+    var newRoomRef = database.ref().child("rooms/"+roomName);
+    database.ref().child("rooms").set({
+      name: roomName
     });
+    
   }
 }
 
@@ -35,23 +36,19 @@ function displayRooms() {
     var roomsDiv = document.getElementById("rooms");
     roomsDiv.innerHTML = "";
     snapshot.forEach(function(childSnapshot) {
-      var roomKey = childSnapshot.key;
+      //var roomKey = childSnapshot.key;
       var roomName = childSnapshot.child("name").val();
       var roomDiv = document.createElement("div");
       roomDiv.innerHTML =
-        "<a href='#' onclick='displayMessages(\"" +
-        roomKey +
-        "\")'>" +
-        roomName +
-        "</a>";
+        "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
       roomsDiv.appendChild(roomDiv);
     });
   });
 }
 
 // Display the chat messages
-function displayMessages(roomKey) {
-  var messagesRef = database.ref().child("messages/" + roomKey);
+function displayMessages(roomName) {
+  var messagesRef = database.ref().child("messages/" + roomName);
   messagesRef.on("value", function(snapshot) {
     var messagesDiv = document.getElementById("messages");
     messagesDiv.innerHTML = "";
@@ -65,13 +62,13 @@ function displayMessages(roomKey) {
 }
 
 // Send a chat message
-function sendMessage(roomKey) {
+function sendMessage(roomName) {
   var messageField = document.getElementById("message");
   var messageText = messageField.value;
   var username = localStorage.getItem("username");
 
   if (messageText.trim() != "") {
-    var messagesRef = database.ref().child("messages/" + roomKey);
+    var messagesRef = database.ref().child("rooms/" + roomName);
     messagesRef.push().set({
       name: username,
       text: messageText
