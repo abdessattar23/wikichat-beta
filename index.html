@@ -10,14 +10,14 @@
   <body>
     <div id="app">
       <h1>Chat Room</h1>
-      <div id="login">
+      <div id="login-page">
         <label for="username">Enter a username:</label>
         <input type="text" id="username" />
         <button onclick="login()">Login</button>
       </div>
-      <div id="chat" style="display: none">
-        <div id="room-list"></div>
-        <div id="message-list"></div>
+      <div id="chat-page" style="display: none">
+        <div id="rooms"></div>
+        <div id="messages"></div>
         <input type="text" id="message" />
         <button onclick="sendMessage()">Send</button>
       </div>
