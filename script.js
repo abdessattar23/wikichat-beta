@@ -27,6 +27,27 @@ function createRoom() {
   }
 }
 
+// Display the chat rooms
+function displayRooms() {
+  var roomsRef = database.ref().child("rooms");
+  roomsRef.on("value", function(snapshot) {
+    var roomsDiv = document.getElementById("rooms");
+    roomsDiv.innerHTML = "";
+    snapshot.forEach(function(childSnapshot) {
+      var roomKey = childSnapshot.key;
+      var roomName = childSnapshot.child("name").val();
+      var roomDiv = document.createElement("div");
+      roomDiv.innerHTML =
+        "<a href='#' onclick='displayMessages(\"" +
+        roomKey +
+        "\")'>" +
+        roomName +
+        "</a>";
+      roomsDiv.appendChild(roomDiv);
+    });
+  });
+}
+
 // Display the chat messages
 function displayMessages(roomKey) {
   var messagesRef = database.ref().child("messages/" + roomKey);
@@ -65,22 +86,6 @@ function login() {
     localStorage.setItem("username", username);
     document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
-    var roomsRef = database.ref().child("rooms");
-    roomsRef.on("value", function(snapshot) {
-      var roomsDiv = document.getElementById("rooms");
-      roomsDiv.innerHTML = "";
-      snapshot.forEach(function(childSnapshot) {
-        var roomKey = childSnapshot.key;
-        var roomName = childSnapshot.child("name").val();
-        var roomDiv = document.createElement("div");
-        roomDiv.innerHTML =
-          "<a href='#' onclick='displayMessages(\"" +
-          roomKey +
-          "\")'>" +
-          roomName +
-          "</a>";
-        roomsDiv.appendChild(roomDiv);
-      });
-    });
+    displayRooms();
   }
 }
