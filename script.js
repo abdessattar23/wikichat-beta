@@ -7,7 +7,7 @@ var config = {
     messagingSenderId: "717471861279",
     appId: "1:717471861279:web:cb26f45158847e3dd3e32a"
 };
-
+var newRoomRef;
 firebase.initializeApp(config);
 
 // Get a reference to the database service
@@ -21,7 +21,7 @@ input.focus();
 function createRoom() {
   var roomName = document.getElementById("room-name").value;
   if (roomName != null && roomName.trim() != "") {
-    var newRoomRef = database.ref().child("rooms/"+roomName);
+    newRoomRef = database.ref().child("rooms/"+roomName);
     
     displayMessages(roomName);
   }
