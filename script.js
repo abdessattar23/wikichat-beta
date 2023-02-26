@@ -1,12 +1,12 @@
 document.onload = function(){
-  if(localStorage.getItem("username")){
+  if(localstorage.getItem("username")){
      document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
     document.getElementById("logout").style.display = "block";
   }
 };
 function logout(){
-  localStorage.setItem("username","");
+  localstorage.set("username","");
 };
 // Initialize Firebase
 var config = {
@@ -33,32 +33,25 @@ function createRoom() {
 roomName = document.getElementById("room-name").value;
   if (roomName != null && roomName.trim() != "") {
     newRoomRef = database.ref().child("rooms/"+roomName);
-
+    var newId = firebase.database().ref().child('roomNames').push().key;
+       firebase.database().ref(`roomNames/${newId}`).set({
+  name: roomName
+});
     displayMessages(roomName);
   }
 }
-
-// Display the chat rooms
-function displayRooms() {
-  var roomsRef = database.ref().child("rooms");
-  roomsRef.on("value", function(snapshot) {
-    var roomsDiv = document.getElementById("rooms");
-    roomsDiv.innerHTML = "";
-    snapshot.forEach(function(childSnapshot) {
-      //var roomKey = childSnapshot.key;
-      var roomContent = childSnapshot.val();
-      var roomDiv = document.createElement("div");
+        function display(){
+          firebase.database().ref('roomNames').once('value').then((snapshot) => {
+  snapshot.forEach((childSnapshot) => {
+    const childData = childSnapshot.val().name;
+var roomDiv = document.createElement("div");
       roomDiv.innerHTML =
 
-        "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
-        //roomName +
-        //"\")'>" +
-        //roomName +
-        //"</a>";
-      roomsDiv.appendChild(roomDiv);
-    });
+        "<a href='#' onclick='displayMessages(roomName)'>" +childData +"</a>";
   });
-}
+});
+        }
+
 
 // Display the chat messages
 function displayMessages(roomName) {
