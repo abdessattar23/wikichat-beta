@@ -88,7 +88,7 @@ roomName = document.getElementById("room-name").value;
     snapshot.forEach(function(childSnapshot) {
       var childData = childSnapshot.val().name;
       var roomDiv = document.createElement("div");
-      roomDiv.innerHTML = "<a href='#' id="+childData+" onclick='displayMessages(\"" + childData + "\");roomName = document.getElemtById("'+childData+'").textContent;'>" + childData + "</a>";
+      roomDiv.innerHTML = "<a href='#' id="+childData+" onclick='displayMessages(\"" + childData + "\")'>" + childData + "</a>";
       roomsDiv.appendChild(roomDiv);
     });
   });
