@@ -40,17 +40,20 @@ roomName = document.getElementById("room-name").value;
     displayMessages(roomName);
   }
 }
-        function display(){
-          firebase.database().ref('roomNames').once('value').then((snapshot) => {
-  snapshot.forEach((childSnapshot) => {
-    const childData = childSnapshot.val().name;
-var roomDiv = document.createElement("div");
-      roomDiv.innerHTML =
-
-        "<a href='#' onclick='displayMessages(roomName)'>" +childData +"</a>";
+        function display() {
+  var roomsRef = firebase.database().ref('roomNames');
+  roomsRef.on("value", function(snapshot) {
+    var roomsDiv = document.getElementById("rooms");
+    roomsDiv.innerHTML = "";
+    snapshot.forEach(function(childSnapshot) {
+      var childData = childSnapshot.val().name;
+      var roomDiv = document.createElement("div");
+      roomDiv.innerHTML = "<a href='#' onclick='displayMessages(\"" + childData + "\")'>" + childData + "</a>";
+      roomsDiv.appendChild(roomDiv);
+    });
   });
-});
-        }
+}
+
 
 
 // Display the chat messages
