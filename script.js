@@ -1,12 +1,13 @@
 document.onload = function(){
-  if(localstorage.getItem("username")){
+  if(localStorage.getItem("username")){
+    display();
      document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
     document.getElementById("logout").style.display = "block";
   }
 };
 function logout(){
-  localstorage.set("username","");
+  localStorage.removeItem("username");
 };
 // Initialize Firebase
 var config = {
@@ -32,11 +33,18 @@ input.focus();
 function createRoom() {
 roomName = document.getElementById("room-name").value;
   if (roomName != null && roomName.trim() != "") {
-    newRoomRef = database.ref().child("rooms/"+roomName);
+    firebase.database().ref('roomNames').orderByValue().equalTo(roomName).once("value", function(snapshot) {
+  if (snapshot.exists()) {
+    console.log("room already exists in database!");
+  } else {
     var newId = firebase.database().ref().child('roomNames').push().key;
        firebase.database().ref(`roomNames/${newId}`).set({
   name: roomName
 });
+  }
+});
+    newRoomRef = database.ref().child("rooms/"+roomName);
+
     displayMessages(roomName);
   }
 }
@@ -95,5 +103,6 @@ function login() {
     document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
     //displayRooms();
+    display();
   }
 }
