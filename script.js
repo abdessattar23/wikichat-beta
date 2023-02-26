@@ -1,3 +1,13 @@
+document.onload = function(){
+  if(localstorage.getItem("username")){
+     document.getElementById("login-page").style.display = "none";
+    document.getElementById("chat-page").style.display = "block";
+    document.getElementById("logout").style.display = "block";
+  }
+};
+function logout(){
+  localstorage.set("username","");
+};
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyDoJ6vE_0O1OSiEZGsYu1B86YvmByZFAyw",
@@ -8,6 +18,7 @@ var config = {
     appId: "1:717471861279:web:cb26f45158847e3dd3e32a"
 };
 var newRoomRef;
+var RoomName;
 firebase.initializeApp(config);
 
 // Get a reference to the database service
@@ -19,35 +30,35 @@ input.focus();
 
 // Create a new chat room
 function createRoom() {
-  var roomName = document.getElementById("room-name").value;
+roomName = document.getElementById("room-name").value;
   if (roomName != null && roomName.trim() != "") {
     newRoomRef = database.ref().child("rooms/"+roomName);
-    
+
     displayMessages(roomName);
   }
 }
 
 // Display the chat rooms
-//function displayRooms() {
-//  var roomsRef = database.ref().child("rooms");
- // roomsRef.on("value", function(snapshot) {
-   // var roomsDiv = document.getElementById("rooms");
-    //roomsDiv.innerHTML = "";
-    //snapshot.forEach(function(childSnapshot) {
+function displayRooms() {
+  var roomsRef = database.ref().child("rooms");
+  roomsRef.on("value", function(snapshot) {
+    var roomsDiv = document.getElementById("rooms");
+    roomsDiv.innerHTML = "";
+    snapshot.forEach(function(childSnapshot) {
       //var roomKey = childSnapshot.key;
-      //var roomName = childSnapshot.val();
-      //var roomDiv = document.createElement("div");
-      //roomDiv.innerHTML =
-        
-       // "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
+      var roomContent = childSnapshot.val();
+      var roomDiv = document.createElement("div");
+      roomDiv.innerHTML =
+
+        "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
         //roomName +
         //"\")'>" +
         //roomName +
         //"</a>";
-      //roomsDiv.appendChild(roomDiv);
-    //});
-  //});
-//}
+      roomsDiv.appendChild(roomDiv);
+    });
+  });
+}
 
 // Display the chat messages
 function displayMessages(roomName) {
