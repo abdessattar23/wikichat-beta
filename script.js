@@ -1,12 +1,12 @@
 document.onload = function(){
-  if(localstorage.getItem("username")){
+  if(localStorage.getItem("username")){
      document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
     document.getElementById("logout").style.display = "block";
   }
 };
 function logout(){
-  localstorage.set("username","");
+  localStorage.setItem("username","");
 };
 // Initialize Firebase
 var config = {
