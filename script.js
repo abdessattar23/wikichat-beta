@@ -23,7 +23,7 @@ function createRoom() {
   if (roomName != null && roomName.trim() != "") {
     var newRoomRef = database.ref().child("rooms/"+roomName);
     
-    displayMesages(roomName);
+    displayMessages(roomName);
   }
 }
 
