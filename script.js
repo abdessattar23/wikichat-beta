@@ -19,7 +19,7 @@ input.focus();
 
 // Create a new chat room
 function createRoom() {
-  var roomName = prompt("Enter the name of the new room:");
+  var roomName = document.getElementById("room-name").value;
   if (roomName != null && roomName.trim() != "") {
     var newRoomRef = database.ref().child("rooms/"+roomName);
     
