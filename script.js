@@ -56,7 +56,7 @@ roomName = document.getElementById("room-name").value;
     snapshot.forEach(function(childSnapshot) {
       var childData = childSnapshot.val().name;
       var roomDiv = document.createElement("div");
-      roomDiv.innerHTML = "<a href='#' onclick='displayMessages(\"" + childData + "\")'>" + childData + "</a>";
+      roomDiv.innerHTML = "<a href='#' id="+childData+" onclick='displayMessages(\"" + childData + "\");roomName = document.getElemtById("+childData+").textContent;'>" + childData + "</a>";
       roomsDiv.appendChild(roomDiv);
     });
   });
@@ -86,8 +86,8 @@ function sendMessage() {
   var username = localStorage.getItem("username");
 
   if (messageText.trim() != "") {
-    //var messagesRef = database.ref().child("rooms/" + roomName);
-    newRoomRef.push().set({
+    var messagesRef = database.ref().child("rooms/" + roomName);
+    messagesRef.push().set({
       name: username,
       text: messageText
     });
