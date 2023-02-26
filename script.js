@@ -22,38 +22,36 @@ function createRoom() {
   var roomName = prompt("Enter the name of the new room:");
   if (roomName != null && roomName.trim() != "") {
     var newRoomRef = database.ref().child("rooms/"+roomName);
-    database.ref().child("rooms").push().set({
-      roomName
-    });
     
+    displayMesages(roomName);
   }
 }
 
 // Display the chat rooms
-function displayRooms() {
-  var roomsRef = database.ref().child("rooms");
-  roomsRef.on("value", function(snapshot) {
-    var roomsDiv = document.getElementById("rooms");
-    roomsDiv.innerHTML = "";
-    snapshot.forEach(function(childSnapshot) {
+//function displayRooms() {
+//  var roomsRef = database.ref().child("rooms");
+ // roomsRef.on("value", function(snapshot) {
+   // var roomsDiv = document.getElementById("rooms");
+    //roomsDiv.innerHTML = "";
+    //snapshot.forEach(function(childSnapshot) {
       //var roomKey = childSnapshot.key;
-      var roomName = childSnapshot.val();
-      var roomDiv = document.createElement("div");
-      roomDiv.innerHTML =
+      //var roomName = childSnapshot.val();
+      //var roomDiv = document.createElement("div");
+      //roomDiv.innerHTML =
         
-        "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
-        roomName +
-        "\")'>" +
-        roomName +
-        "</a>";
-      roomsDiv.appendChild(roomDiv);
-    });
-  });
-}
+       // "<a href='#' onclick='displayMessages(roomName)'>" +roomName +"</a>";
+        //roomName +
+        //"\")'>" +
+        //roomName +
+        //"</a>";
+      //roomsDiv.appendChild(roomDiv);
+    //});
+  //});
+//}
 
 // Display the chat messages
 function displayMessages(roomName) {
-  var messagesRef = database.ref().child("messages/" + roomName);
+  var messagesRef = database.ref().child("rooms/" + roomName);
   messagesRef.on("value", function(snapshot) {
     var messagesDiv = document.getElementById("messages");
     messagesDiv.innerHTML = "";
@@ -89,6 +87,6 @@ function login() {
     localStorage.setItem("username", username);
     document.getElementById("login-page").style.display = "none";
     document.getElementById("chat-page").style.display = "block";
-    displayRooms();
+    //displayRooms();
   }
 }
