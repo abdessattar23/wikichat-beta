@@ -65,14 +65,14 @@ function displayMessages(roomName) {
 }
 
 // Send a chat message
-function sendMessage(roomName) {
+function sendMessage() {
   var messageField = document.getElementById("message");
   var messageText = messageField.value;
   var username = localStorage.getItem("username");
 
   if (messageText.trim() != "") {
-    var messagesRef = database.ref().child("rooms/" + roomName);
-    messagesRef.push().set({
+    //var messagesRef = database.ref().child("rooms/" + roomName);
+    newRoomRef.push().set({
       name: username,
       text: messageText
     });
