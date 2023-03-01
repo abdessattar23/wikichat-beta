@@ -1,0 +1,133 @@
+!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SIGNUP | WikiChat</title>
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Varela Round -->
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+    <!-- CSS File -->
+    <link rel="stylesheet" href="signup.css">
+    <link rel="shortcut icon" href="img/Logo.png" type="image/png">
+    <script src="jquery.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h2>Welcome back</h2>
+        <p>Enter your details</p>
+
+        <form>
+            <div class="form-group">
+                <label for="username">
+                    Username
+                </label>
+                <i class="bx bxs-user"></i>
+                <input type="text" id="username" placeholder="Your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">
+                    Password
+                </label>
+                <i class="bx bxs-lock"></i>
+                <input type="password" id="password" placeholder="Your password" required>
+            </div>
+            <div class="form-group">
+                <label for="password">
+                    Verify Password
+                </label>
+                <i class="bx bxs-lock"></i>
+                <input type="password" id="verpassword" placeholder="Your password" required>
+            </div>
+
+            <input type="button" value="Log In" onclick="ver();"> <pre>Already have an account?<a class="forgot"
+                href="index.html">Log In</a></pre><br />
+            <code>For Free ,For Life</code>
+            <pre class="tut">watch our tutorial <a href="/tutorial">Here</a></pre>
+
+            <div class="error">
+                <blockquote>Password didn't match . Please re-verify the password</blockquote>
+            </div>
+            <div class="success">
+                <blockquote></blockquote>
+            </div>
+
+
+
+        </form>
+
+    </div>
+    <script>
+        $(".error").hide();
+        $(".success").hide();
+        //Firebase data
+        var firebaseConfig = {
+            apiKey: "AIzaSyANjaVjbPk_JsJp60PZYGHxy-sqHuZdkzw",
+            authDomain: "chatme-2ebf4.firebaseapp.com",
+            projectId: "chatme-2ebf4",
+            storageBucket: "chatme-2ebf4.appspot.com",
+            messagingSenderId: "1060710336790",
+            appId: "1:1060710336790:web:bfb3eb65397beee1516837"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // This is very IMPORTANT!! We're going to use "db" a lot.
+        var db = firebase.database();
+        //-----------------WRITE TO THE DATABASE----------------
+
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+
+
+        function ver() {
+
+            var verpassword = document.getElementById("verpassword").value;
+            if (password == verpassword) {
+                db.ref("wikichat/users/").once('value', function (snapshot) {
+                    if (snapshot.hasChild(username)) {
+                        //username alredy existe
+                        $(".error").textContent = "username already exist; Please type another one";
+                        $(".error").toggle();
+                    } else {
+                        //completing the registration
+                       db.ref('wikichat/users/' + username).set({
+                            username: username,
+                            password: password
+                        }, (error) => {
+                            if (error) {
+                                // The write failed...
+                                console.error(error);
+                                $(".error").textContent = "Something went wrong . Please try again later";
+                        $(".error").toggle();
+                            } else {
+                                // Data saved successfully!
+                                console.log("data saved");
+                                $(".success").textContent = "Account created successfully. Please go to the login page";
+                        $(".success").toggle();
+                        window.location = "/index.html";
+                            }
+                        });
+                    }
+                });
+
+
+            } else {
+                $(".error").toggle();
+            };
+
+        };
+    </script>
+</body>
+
+</html>

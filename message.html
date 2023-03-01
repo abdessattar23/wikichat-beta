@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" onload="testCookie();">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="message.css">
+    <link rel="shortcut icon" href="img/Logo.png" type="image/png">
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+
+    <title>WikiChat</title>
+</head>
+
+<body>
+    <div class="login-box">
+        <div class="form-group">
+            <label for="WikiChat">
+                <h2 style="color:#fff" id="default">WikiChat</h2>
+            </label>
+
+            </div>
+            <input type="text" id="roomName"><button id="secret" onclick="secretRoom()">Generate Secret Room</button><button class="new" onclick="createRoom()">Create Or Get</button>
+
+        <div class="messages"></div>
+
+          <input type="text" id="message">
+        <button class="send" onclick="sendMessage()">Send</button><button class="logout" onclick="logout()">Logout</button>
+         </div>
+    </div>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W2D8PR9SFZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W2D8PR9SFZ');
+</script>
+
+    <script>
+
+        function setCookie(cname, cvalue,) {
+  document.cookie = cname + "=" + cvalue;
+}
+    function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function logout(){
+  setCookie("username", "");
+   document.location = "index.html";
+};
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyDoJ6vE_0O1OSiEZGsYu1B86YvmByZFAyw",
+    authDomain: "wikichat-beta2.firebaseapp.com",
+    projectId: "wikichat-beta2",
+    storageBucket: "wikichat-beta2.appspot.com",
+    messagingSenderId: "717471861279",
+    appId: "1:717471861279:web:cb26f45158847e3dd3e32a"
+};
+var newRoomRef;
+var RoomName;
+firebase.initializeApp(config);
+
+// Get a reference to the database service
+var database = firebase.database();
+
+// Get the input field and set the focus on it
+var input = document.getElementById("message");
+input.focus();
+
+// Create a new chat room
+function createRoom() {
+roomName = document.getElementById("roomName").value;
+  if (roomName != null && roomName.trim() != "") {
+    firebase.database().ref('roomNames').orderByValue().equalTo(roomName).once("value", function(snapshot) {
+  if (snapshot.exists()) {
+    console.log("room already exists in database!");
+  } else {
+
+       firebase.database().ref(`roomNames/${roomName}`).set({
+  name: roomName
+});
+  }
+});
+    newRoomRef = database.ref().child("rooms/"+roomName);
+
+    displayMessages(roomName);
+    document.querySelectorAll("#default")[0].innerHTML = roomName;
+
+  }
+  document.getElementById("roomName").value = '';
+}
+
+
+
+
+// Display the chat messages
+function displayMessages(roomName) {
+  var messagesRef = database.ref().child("rooms/" + roomName);
+  messagesRef.on("value", function(snapshot) {
+    var messagesDiv = document.querySelectorAll(".messages")[0];
+    messagesDiv.innerHTML = "";
+    snapshot.forEach(function(childSnapshot) {
+      var message = childSnapshot.val();
+      var messageDiv = document.createElement("div");
+      messageDiv.setAttribute("class","message");
+      if(message.type == 'leaker'){
+      messageDiv.setAttribute("style","background:red;color:white;");
+      }else{
+        messageDiv.setAttribute("style","background:green;color:white;");
+        };
+      messagesDiv.appendChild(messageDiv);
+    });
+  });
+}
+
+// Send a chat message
+function sendMessage() {
+  var messageField = document.getElementById("message");
+  var messageText = messageField.value;
+  var username = getCookie("username");
+  var type = getCookie("type");
+
+  if (messageText.trim() != "") {
+    var messagesRef = database.ref().child("rooms/" + roomName);
+    messagesRef.push().set({
+      name: username,
+      type: type,
+      text: messageText
+    });
+    messageField.value = "";
+  }
+}
+   var randomstring;
+ function secretRoom() {
+            //initialize a variable having alpha-numeric characters
+    var chars = "@=+?0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+
+            //specify the length for the new string to be generated
+    var string_length = 40;
+    randomstring = '';
+
+            //put a loop to select a character randomly in each iteration
+    for (var i=0; i<string_length; i++) {
+        var rnum = Math.floor(Math.random() * chars.length);
+        randomstring += chars.substring(rnum,rnum+1);
+        }
+        document.getElementById("roomName").value = randomstring;
+        navigator.clipboard.writeText(randomstring);
+        alert("key copied to the clipboard. please share it just with trusted people to join the secret room by typing it in the input");
+    }
+
+    function Cookie(name) {
+    var dc = document.cookie;
+    var prefix = name + "=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else
+    {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+        end = dc.length;
+        }
+    }
+    // because unescape has been deprecated, replaced with decodeURI
+    //return unescape(dc.substring(begin + prefix.length, end));
+    return decodeURI(dc.substring(begin + prefix.length, end));
+}
+
+function testCookie(){
+    var ucookie = Cookie("username");
+    var tcookie = Cookie("type");
+
+    if (ucookie == null || tcookie == null) {
+        document.location = "index.html";
+    }
+
+}
+
+    </script>
+</body>
+
+</html>

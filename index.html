@@ -1,143 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Chat App</title>
-  </head>
-  <body>
-    <div id="app">
-      <h1>Chat Room</h1>
-      <div id="login-page">
-        <label for="username">Enter a username:</label>
-        <input type="text" id="username" />
-        <button onclick="login()">Login</button>
-      </div>
-      <div id="chat-page" style="display: none">
-        <div>
-          <label for="room-name">Enter a room name:</label>
-          <input type="text" id="room-name" />
-          <button onclick="createRoom()">Create Room</button>
-        </div>
-        <div id="rooms"></div>
-        <div id="messages"></div>
-        <input type="text" id="message" />
-        <button onclick="sendMessage()">Send</button>
-        <button id="logout" onclick="logout()"></button>
-      </div>
-    </div>
+<html lang="en" onload="testCookie()">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LOGIN | WikiChat</title>
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+    <!-- Varela Round -->
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <!-- CSS File -->
+    <link rel="stylesheet" href="index.css">
+    <link rel="shortcut icon" href="img/Logo.png" type="image/png">
     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h2>Welcome back</h2>
+        <p>Enter your details</p>
+
+        <form>
+            <div class="form-group">
+                <label for="username">
+                    Username
+                </label>
+                <i class="bx bxs-user"></i>
+                <input type="text" id="username" placeholder="Your username" required><br/>
+                <select id="type" required>
+                   <option value='leaker'>Leaker</option>
+                   <option value='reader'>Reader</option>
+                </select>
+            </div>
+
+            <input type="button" value="Log In Or Sign Up" onclick="login();">
+            <code>Speak, leak, no retreat. Wikichat keeps you discreet.</code>
+            <pre class="tut">watch our tutorial <a href="/tutorial">Here</a></pre>
+
+
+
+        </form>
+
+    </div>
     <script>
-           document.onload = function(){
-  if(localStorage.getItem("username")){
-    display();
-     document.getElementById("login-page").style.display = "none";
-    document.getElementById("chat-page").style.display = "block";
-    document.getElementById("logout").style.display = "block";
-  }
-};
-function logout(){
-  localStorage.removeItem("username");
-};
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyDoJ6vE_0O1OSiEZGsYu1B86YvmByZFAyw",
-    authDomain: "wikichat-beta2.firebaseapp.com",
-    projectId: "wikichat-beta2",
-    storageBucket: "wikichat-beta2.appspot.com",
-    messagingSenderId: "717471861279",
-    appId: "1:717471861279:web:cb26f45158847e3dd3e32a"
-};
-var newRoomRef;
-var RoomName;
-firebase.initializeApp(config);
-
-// Get a reference to the database service
-var database = firebase.database();
-
-// Get the input field and set the focus on it
-var input = document.getElementById("message");
-input.focus();
-
-// Create a new chat room
-function createRoom() {
-roomName = document.getElementById("room-name").value;
-  if (roomName != null && roomName.trim() != "") {
-    firebase.database().ref('roomNames').orderByValue().equalTo(roomName).once("value", function(snapshot) {
-  if (snapshot.exists()) {
-    console.log("room already exists in database!");
-  } else {
-
-       firebase.database().ref(`roomNames/${roomName}`).set({
-  name: roomName
-});
-  }
-});
-    newRoomRef = database.ref().child("rooms/"+roomName);
-
-    displayMessages(roomName);
-  }
+    function setCookie(cname, cvalue,) {
+  document.cookie = cname + "=" + cvalue;
 }
-        function display() {
-  var roomsRef = firebase.database().ref('roomNames');
-  roomsRef.on("value", function(snapshot) {
-    var roomsDiv = document.getElementById("rooms");
-    roomsDiv.innerHTML = "";
-    snapshot.forEach(function(childSnapshot) {
-      var childData = childSnapshot.val().name;
-      var roomDiv = document.createElement("div");
-      roomDiv.innerHTML = "<a href='#' id="+childData+" onclick='displayMessages(\"" + childData + "\")'>" + childData + "</a>";
-      roomsDiv.appendChild(roomDiv);
-    });
-  });
+    function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function Cookie(name) {
+    var dc = document.cookie;
+    var prefix = name + "=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else
+    {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+        end = dc.length;
+        }
+    }
+    // because unescape has been deprecated, replaced with decodeURI
+    //return unescape(dc.substring(begin + prefix.length, end));
+    return decodeURI(dc.substring(begin + prefix.length, end));
 }
 
+function testCookie(){
+    var ucookie = Cookie("username");
+    var tcookie = Cookie("type");
 
+    if (ucookie == null || tcookie == null) {
 
-// Display the chat messages
-function displayMessages(roomName) {
-  var messagesRef = database.ref().child("rooms/" + roomName);
-  messagesRef.on("value", function(snapshot) {
-    var messagesDiv = document.getElementById("messages");
-    messagesDiv.innerHTML = "";
-    snapshot.forEach(function(childSnapshot) {
-      var message = childSnapshot.val();
-      var messageDiv = document.createElement("div");
-      messageDiv.innerHTML = message.name + ": " + message.text;
-      messagesDiv.appendChild(messageDiv);
-    });
-  });
+    }
+    else {
+        document.location = "message.html";
+    }
 }
-
-// Send a chat message
-function sendMessage() {
-  var messageField = document.getElementById("message");
-  var messageText = messageField.value;
-  var username = localStorage.getItem("username");
-
-  if (messageText.trim() != "") {
-    var messagesRef = database.ref().child("rooms/" + roomName);
-    messagesRef.push().set({
-      name: username,
-      text: messageText
-    });
-    messageField.value = "";
-  }
-}
-
 // Login to the chat app
 function login() {
+  var type = document.getElementById("type").value;
+  alert(type);
   var username = document.getElementById("username").value.trim();
   if (username != "") {
-    localStorage.setItem("username", username);
-    document.getElementById("login-page").style.display = "none";
-    document.getElementById("chat-page").style.display = "block";
-    //displayRooms();
-    display();
+    setCookie("username", username);
+      setCookie("type", type);
+     document.location="message.html";
   }
-} 
-            </script>
-  </body>
+}
+
+    </script>
+</body>
+
 </html>
